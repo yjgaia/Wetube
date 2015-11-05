@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Wetube</title>
+		<script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" href="bower_components/polymer-firebase-login-buttons/polymer-firebase-login-buttons.html">
+		<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+		<link rel="import" href="bower_components/neon-animation/animations/fade-in-animation.html">
+		<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+		<style>
+			body {
+				background-color: #81C784;
+			}
+			paper-dialog {
+				width: 95%;
+				text-align: center;
+			}
+			paper-dialog h1 {
+				color: #81C784;
+			}
+			paper-dialog p {
+				text-align: left;
+			}
+		</style>
+	</head>
+	<body>
+		<template is="dom-bind" id="app">
+			
+			<!-- 로그인 화면 -->
+			<paper-dialog id="login" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+				<h1>Wetube</h1>
+				<p>
+					Wetube를 이용해 사랑하는 이, 혹은 친한 친구와 동시에 유튜브 영상을 시청하고 컨트롤 할 수 있습니다.<br>
+					<br>
+					다른 공간에 있지만, 영상을 보는 체험은 동일한 것이죠.<br>
+					<br>
+					내가 영상을 재생/정지하거나 화면을 뒤로 돌리면 나와 연결된 이의 영상도 똑같이 반응합니다.<br>
+					<br>
+					영상을 함께 보자고 호출할 수도 있고, 채팅을 할 수도 있죠.<br>
+					<br>
+					이제 로그인하여, 함께하세요.
+				</p>
+				<firebase-google-login-button firebase-url="wetubeapp.firebaseio.com" user="{{userInfo}}" on-google-logged-in="googleLoggedIn"></firebase-google-login-button>
+			</paper-dialog>
+			
+			
+		</template>
+		<script>
+			(function(document) {
+				
+				var ref = new Firebase('https://wetubeapp.firebaseio.com');
+				
+				window.addEventListener('WebComponentsReady', function() {
+					var app = document.querySelector('#app');
+					var userInfo = ref.getAuth();
+					
+					// 로그인 완료 시
+					var logined = function() {
+						console.log('test');
+					};
+					
+					if (userInfo === null) {
+						document.querySelector('#login').open();
+					} else {
+						logined();
+					}
+					
+					app.googleLoggedIn = function() {
+						if (userInfo === null) {
+							userInfo = app.userInfo;
+							document.querySelector('#login firebase-google-login-button').remove();
+							document.querySelector('#login').close();
+							logined();
+						}
+					};
+				});
+			})(document);
+		</script>
+	</body>
+</html>

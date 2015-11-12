@@ -7,50 +7,29 @@
 		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 		<link rel="import" href="bower_components/polymer-firebase-login-buttons/polymer-firebase-login-buttons.html">
 		<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
-		<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
-		<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+		<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+		<link rel="import" href="bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 		<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+		<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+		<link rel="import" href="bower_components/iron-icons/communication-icons.html">
 		<link rel="import" href="bower_components/iron-image/iron-image.html">
+		<link rel="import" href="bower_components/iron-pages/iron-pages.html">
 		<link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
 		<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+		<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
 		<link rel="import" href="bower_components/paper-menu/paper-menu.html">
+		<link rel="import" href="bower_components/paper-item/paper-icon-item.html">
 		<link rel="import" href="bower_components/paper-item/paper-item.html">
+		<link rel="import" href="bower_components/paper-item/paper-item-body.html">
 		<link rel="import" href="bower_components/paper-card/paper-card.html">
 		<link rel="import" href="bower_components/paper-button/paper-button.html">
 		<link rel="import" href="bower_components/paper-styles/color.html">
+		<link rel="import" href="bower_components/paper-input/paper-input.html">
+		<link rel="import" href="bower_components/paper-fab/paper-fab.html">
 		<link rel="import" href="bower_components/neon-animation/animations/fade-in-animation.html">
 		<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
-		<style>
-			@import 'BASE_STYLE.css';
-			
-			body {
-				background-color: #81C784;
-			}
-			paper-dialog {
-				width: 94%;
-				text-align: center;
-			}
-			paper-dialog h1 {
-				color: #81C784;
-				font-size: 20px;
-			}
-			paper-dialog p {
-				margin-top: 20px;
-				padding: 0 20px;
-				text-align: left;
-			}
-			
-			paper-header-panel .paper-header {
-				background-color: #fff;
-				font-size: 20px;
-			}
-			
-			paper-card {
-				margin-top: 15px;
-				margin-left: 3%;
-				width: 94%;
-			}
-		</style>
+		<link rel="stylesheet" href="BASE_STYLE.css">
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 		<template is="dom-bind" id="app">
@@ -72,83 +51,169 @@
 				<firebase-google-login-button firebase-url="wetubeapp.firebaseio.com" user="{{userInfo}}" on-google-logged-in="googleLoggedIn"></firebase-google-login-button>
 			</paper-dialog>
 			
-			<!-- 목록 화면 -->
-			<div id="list">
+			
+			<iron-pages selected="0">
+			
+				<!-- 목록 화면 -->
+				<div id="list">
+					
+					<paper-scroll-header-panel fixed>
+						<h1 class="paper-header">
+							<paper-menu-button>
+								<paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+								<paper-menu class="dropdown-content">
+									<paper-item on-tap="logout">
+										Logout
+									</paper-item>
+								</paper-menu>
+							</paper-menu-button>
+							Wetube
+						</h1>
+					</paper-header-panel>
+					
+					<div>
+						<template is="dom-repeat" items="{{videos}}">
+							<paper-card data-id="{{item.id}}" on-tap="view" heading="{{item.title}}" image="https://i.ytimg.com/vi/fD2As5RmM8Q/mqdefault.jpg">
+								<div class="card-content">
+									{{item.description}}
+								</div>
+							</paper-card>
+						</template>
+					</div>
+					
+				</div>
 				
-				<paper-header-panel>
-					<h1 class="paper-header">
-						<paper-menu-button>
-							<paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
-							<paper-menu class="dropdown-content">
-								<paper-item on-tap="logout">
-									Logout
-								</paper-item>
-							</paper-menu>
-						</paper-menu-button>
-						Wetube
-					</h1>
-				</paper-header-panel>
+				<!-- 뷰 화면 -->
+				<div id="view">
+					
+					<paper-scroll-header-panel fixed>
+						<h1 class="paper-header">
+							<paper-icon-button icon="arrow-back" on-tap="back"></paper-icon-button>
+							{{currentData.title}}
+						</h1>
+					</paper-header-panel>
+					
+					<iframe fixed id="video" src="https://www.youtube.com/embed/fD2As5RmM8Q" frameborder="0" allowfullscreen></iframe>
+					
+					<div id="invite-user-form">
+						<p>영상을 함께 시청할 유저를 초대하세요.</p>
+						<paper-fab id="invite-user" icon="add" on-tap="inviteUser"></paper-fab>
+						<paper-dialog id="users-dialog">
+							<h2>유저 초대</h2>
+							<paper-dialog-scrollable>
+								<paper-icon-item>
+	  								<div class="avatar" item-icon></div>
+									<div class="flex">
+										심영재
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										황다솜
+									</div>
+									<paper-checkbox checked></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										홍길동
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										김철수
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+	  								<div class="avatar" item-icon></div>
+									<div class="flex">
+										심영재
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										황다솜
+									</div>
+									<paper-checkbox checked></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										홍길동
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										김철수
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+	  								<div class="avatar" item-icon></div>
+									<div class="flex">
+										심영재
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										황다솜
+									</div>
+									<paper-checkbox checked></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										홍길동
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+								<paper-icon-item>
+									<div class="avatar" item-icon></div>
+									<div class="flex">
+										김철수
+									</div>
+									<paper-checkbox></paper-checkbox>
+								</paper-icon-item>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+								<paper-button dialog-dismiss>
+									취소
+								</paper-button>
+								<paper-button dialog-confirm autofocus>
+									초대
+								</paper-button>
+							</div>
+						</paper-dialog>
+					</div>
+					
+					<!--
+					<div id="message-list">
+						<p class="message-item">영재: 안녕 다솜? 재밌는 영상이 있어서 초대했어.</p>
+						<p class="message-item">다솜: 안녕 영재? 어떤건데?</p>
+						<p class="message-item">영재: 이 부분이 특히 재밌어.</p>
+					</div>
+					
+					<div id="message-form">
+						<paper-input id="message-input" label="메시지를 입력해주세요." value="{{message}}" on-keyup="{{checkMessageKey}}"></paper-input>
+						<paper-fab id="message-send" icon="send" on-tap="{{sendMessage}}"></paper-fab>
+					</div>
+					-->
+				</div>
 				
-				<template is="dom-repeat" items="{{videos}}">
-					<paper-card heading="영상 제목" image="https://i.ytimg.com/vi/fD2As5RmM8Q/mqdefault.jpg">
-						<div class="card-content">
-							영상 내용
-						</div>
-					</paper-card>
-				</template>
-				
-			</div>
+			</iron-pages>
 
 		</template>
-		<script>
-			(function(document) {
-				
-				var ref = new Firebase('https://wetubeapp.firebaseio.com');
-				
-				window.addEventListener('WebComponentsReady', function() {
-					var app = document.querySelector('#app');
-					var userInfo = ref.getAuth();
-					
-					app.videos = [{}, {}, {}];
-					
-					var list = document.querySelector('#list');
-					list.style.display = 'none';
-					
-					// 로그인 완료 시
-					var logined = function() {
-						list.style.display = 'block';
-						app.listSelected = 0;
-					};
-					
-					if (userInfo === null) {
-						document.querySelector('#login').open();
-					} else {
-						logined();
-					}
-					
-					app.googleLoggedIn = function() {
-						
-						if (userInfo === null) {
-							userInfo = app.userInfo;
-							
-							document.querySelector('#login firebase-google-login-button').style.display = 'none';
-							document.querySelector('#login').close();
-							
-							logined();
-						}
-					};
-					
-					app.logout = function() {
-						
-						userInfo = null;
-						firebaseLogin.logout();
-						
-						list.style.display = 'none';
-						document.querySelector('#login firebase-google-login-button').style.display = 'block';
-						document.querySelector('#login').open();
-					};
-				});
-			})(document);
-		</script>
+		<script src="app.js"></script>
 	</body>
 </html>

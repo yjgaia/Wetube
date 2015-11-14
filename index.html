@@ -51,7 +51,6 @@
 				<firebase-google-login-button firebase-url="wetubeapp.firebaseio.com" user="{{userInfo}}" on-google-logged-in="googleLoggedIn"></firebase-google-login-button>
 			</paper-dialog>
 			
-			
 			<iron-pages selected="0">
 			
 				<!-- 목록 화면 -->
@@ -68,12 +67,13 @@
 								</paper-menu>
 							</paper-menu-button>
 							Wetube
+							<paper-fab mini id="search-button" icon="search" on-tap="search"></paper-fab>
 						</h1>
 					</paper-header-panel>
 					
 					<div>
 						<template is="dom-repeat" items="{{videos}}">
-							<paper-card data-id="{{item.id}}" on-tap="view" heading="{{item.title}}" image="https://i.ytimg.com/vi/fD2As5RmM8Q/mqdefault.jpg">
+							<paper-card data-id="{{item.id}}" on-tap="view" heading="{{item.title}}" image="{{item.thumbnail}}">
 								<div class="card-content">
 									{{item.description}}
 								</div>
@@ -93,7 +93,7 @@
 						</h1>
 					</paper-header-panel>
 					
-					<iframe fixed id="video" src="https://www.youtube.com/embed/fD2As5RmM8Q" frameborder="0" allowfullscreen></iframe>
+					<iframe fixed id="video" src="https://www.youtube.com/embed/{{currentData.id}}" frameborder="0" allowfullscreen></iframe>
 					
 					<div id="invite-user-form">
 						<p>영상을 함께 시청할 유저를 초대하세요.</p>
@@ -214,6 +214,7 @@
 			</iron-pages>
 
 		</template>
+		<script src="secure.js"></script>
 		<script src="app.js"></script>
 	</body>
 </html>

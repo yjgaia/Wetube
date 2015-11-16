@@ -36,7 +36,9 @@
 
         if ( !this.user ) {
 
-          this.$.firebaseLogin.login();
+          this.$.firebaseLogin.login({
+          	scope: 'email'
+          });
 
         } else {
 

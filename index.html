@@ -67,7 +67,10 @@
 								</paper-menu>
 							</paper-menu-button>
 							Wetube
-							<paper-fab mini id="search-button" icon="search" on-tap="search"></paper-fab>
+							<div id="search-box">
+								<paper-input no-label-float id="search-input" label="검색어를 입력해주세요." value="{{searchQuery}}" on-keyup="checkSearchKey"></paper-input>
+								<paper-fab mini id="search-button" icon="search" on-tap="search"></paper-fab>
+							</div>
 						</h1>
 					</paper-header-panel>
 					
@@ -99,92 +102,19 @@
 						<p>영상을 함께 시청할 유저를 초대하세요.</p>
 						<paper-fab id="invite-user" icon="add" on-tap="inviteUser"></paper-fab>
 						<paper-dialog id="users-dialog">
-							<h2>유저 초대</h2>
+							<h2>
+								<span>유저 초대</span>
+								<paper-fab mini id="add-user-button" icon="add" on-tap="addUser"></paper-fab>
+								<paper-input no-label-float id="add-user-input" label="이메일을 입력해주세요." value="{{addUserEmail}}" on-keyup="checkAddUserKey"></paper-input>
+							</h2>
 							<paper-dialog-scrollable>
-								<paper-icon-item>
-	  								<div class="avatar" item-icon></div>
-									<div class="flex">
-										심영재
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										황다솜
-									</div>
-									<paper-checkbox checked></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										홍길동
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										김철수
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-	  								<div class="avatar" item-icon></div>
-									<div class="flex">
-										심영재
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										황다솜
-									</div>
-									<paper-checkbox checked></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										홍길동
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										김철수
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-	  								<div class="avatar" item-icon></div>
-									<div class="flex">
-										심영재
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										황다솜
-									</div>
-									<paper-checkbox checked></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										홍길동
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
-								<paper-icon-item>
-									<div class="avatar" item-icon></div>
-									<div class="flex">
-										김철수
-									</div>
-									<paper-checkbox></paper-checkbox>
-								</paper-icon-item>
+								<template is="dom-repeat" items="[[addUsers]]" as="addUser">
+									<paper-icon-item>
+		  								<div class="avatar" item-icon></div>
+										<div class="flex">{{addUser.name}}</div>
+										<paper-checkbox></paper-checkbox>
+									</paper-icon-item>
+								</template>
 							</paper-dialog-scrollable>
 							<div class="buttons">
 								<paper-button dialog-dismiss>
@@ -215,6 +145,8 @@
 
 		</template>
 		<script src="secure.js"></script>
+		<script src="user.js"></script>
+		<script src="view.js"></script>
 		<script src="app.js"></script>
 	</body>
 </html>

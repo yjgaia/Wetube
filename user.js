@@ -13,12 +13,36 @@ function injectUserFuncs(app) {
 	var logined = function() {
 		list.style.display = 'block';
 		app.listSelected = 0;
-
+		
+		// 유저 정보 저장
 		firebase.child('users').child(userInfo.uid).set({
 			provider : userInfo.provider,
 			name : userInfo.google.displayName,
-			email : userInfo.google.email
+			email : userInfo.google.email,
+			profileImageURL : userInfo.google.profileImageURL
 		});
+		
+		// 유저 목록 추가되었을 시
+		app.addUsers = [];
+		firebase.child('add-users').child(userInfo.uid).on('child_added', function(snap) {
+			var user = snap.val();
+			app.push('addUsers', {
+				id : snap.key(),
+				name : user.name,
+				profileImageURL : user.profileImageURL
+			});
+		});
+		firebase.child('add-users').child(userInfo.uid).on('child_removed', function(snap) {
+			var key = snap.key();
+			app.addUsers.forEach(function(user, index) {
+				if (user.id == key) {
+					app.splice('addUsers', index, 1);
+				}
+			});
+		});
+		
+		// 누군가 나를 초대할 때
+		
 	};
 
 	if (userInfo === null) {
@@ -59,22 +83,6 @@ function injectUserFuncs(app) {
 			app.addUser();
 		}
 	};
-	
-	var findAddUsers = function() {
-		
-		firebase.child('add-users').child(userInfo.uid).once('value', function(snap) {
-			var users = snap.val();
-			app.addUsers = [];
-			if (users !== null) {
-				for (var id in users) {
-					app.push('addUsers', {
-						id : id,
-						name : users[id]
-					});
-				}
-			}
-		});
-	};
 
 	app.addUser = function() {
 		
@@ -94,17 +102,25 @@ function injectUserFuncs(app) {
 				} else {
 					for (var id in users) {
 						// 드디어 유저 정보를 찾았다.
-						firebase.child('add-users').child(userInfo.uid).child(id).set(users[id].name);
-						findAddUsers();
+						firebase.child('add-users').child(userInfo.uid).child(id).set({
+							name : users[id].name,
+							profileImageURL : users[id].profileImageURL
+						});
+						app.addUserEmail = '';
+						app.addUserName = users[id].name;
+						document.querySelector('#add-user-toast').show();
 					}
 				}
 			});
 		}
 	};
 
-	app.inviteUser = function() {
+	app.openInviteUser = function() {
 		document.querySelector('#users-dialog').open();
-		findAddUsers();
+	};
+	
+	app.removeUser = function(e) {
+		firebase.child('add-users').child(userInfo.uid).child(e.currentTarget.dataId).remove();
 	};
 
 }

@@ -39,6 +39,7 @@
     "paper-input": "PolymerElements/paper-input#~1.0.18",
     "paper-fab": "PolymerElements/paper-fab#~1.0.6",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#~1.0.1",
-    "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.14"
+    "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.14",
+    "paper-toast": "PolymerElements/paper-toast#~1.0.0"
   }
 }

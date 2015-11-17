@@ -2,7 +2,7 @@
 body { background-color:#81C784; }
 
 paper-dialog	{ width:94%; text-align:center; }
-paper-dialog h1	{ color: #81C784; font-size:20px; }
+paper-dialog h1	{ color:#81C784; font-size:20px; }
 paper-dialog p	{ margin-top:20px; padding:0 20px; text-align:left; }
 
 paper-scroll-header-panel .paper-header { background-color:#fff; font-size:20px; box-shadow:0 0 5px #000; }
@@ -39,4 +39,5 @@ paper-icon-button[icon=arrow-back]	{ margin: 8px; }
   border-radius: 50%;
   overflow: hidden;
   background: #ccc;
+  background-size: 40px 40px;
 }

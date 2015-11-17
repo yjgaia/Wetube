@@ -22,6 +22,7 @@
 		<link rel="import" href="bower_components/paper-item/paper-item.html">
 		<link rel="import" href="bower_components/paper-item/paper-item-body.html">
 		<link rel="import" href="bower_components/paper-card/paper-card.html">
+		<link rel="import" href="bower_components/paper-toast/paper-toast.html">
 		<link rel="import" href="bower_components/paper-button/paper-button.html">
 		<link rel="import" href="bower_components/paper-styles/color.html">
 		<link rel="import" href="bower_components/paper-input/paper-input.html">
@@ -33,6 +34,7 @@
 	</head>
 	<body>
 		<template is="dom-bind" id="app">
+			<paper-toast id="add-user-toast" text="{{addUserName}}을(를) 추가하였습니다."></paper-toast>
 			
 			<!-- 로그인 화면 -->
 			<paper-dialog id="login" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
@@ -99,8 +101,8 @@
 					<iframe fixed id="video" src="https://www.youtube.com/embed/{{currentData.id}}" frameborder="0" allowfullscreen></iframe>
 					
 					<div id="invite-user-form">
-						<p>영상을 함께 시청할 유저를 초대하세요.</p>
-						<paper-fab id="invite-user" icon="add" on-tap="inviteUser"></paper-fab>
+						<p>영상을 함께 시청할 유저를 선택하세요.</p>
+						<paper-fab id="invite-user" icon="add" on-tap="openInviteUser"></paper-fab>
 						<paper-dialog id="users-dialog">
 							<h2>
 								<span>유저 초대</span>
@@ -110,18 +112,18 @@
 							<paper-dialog-scrollable>
 								<template is="dom-repeat" items="[[addUsers]]" as="addUser">
 									<paper-icon-item>
-		  								<div class="avatar" item-icon></div>
-										<div class="flex">{{addUser.name}}</div>
-										<paper-checkbox></paper-checkbox>
+		  								<div class="avatar" item-icon style="background-image:url({{addUser.profileImageURL}})"></div>
+										<div class="flex">
+											{{addUser.name}}
+											<paper-icon-button data-id="{{addUser.id}}" icon="clear" on-tap="removeUser"></paper-icon-button>
+										</div>
+										<paper-fab mini id="invite-user-button" icon="done" on-tap="inviteUser"></paper-fab>
 									</paper-icon-item>
 								</template>
 							</paper-dialog-scrollable>
 							<div class="buttons">
 								<paper-button dialog-dismiss>
 									취소
-								</paper-button>
-								<paper-button dialog-confirm autofocus>
-									초대
 								</paper-button>
 							</div>
 						</paper-dialog>

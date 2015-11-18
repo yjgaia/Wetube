@@ -25,6 +25,8 @@ paper-icon-button[icon=arrow-back]	{ margin: 8px; }
 #add-user-input				{ float:right; margin-right:10px; }
 #add-user-button			{ float:right; margin-bottom:10px; margin-right:20px; }
 #invite-user				{ margin:auto; margin-top:20px; }
+#accept-invite-button		{ color:#eeff41; margin:10px 10px 10px 20px; }
+#dismiss-invite-button		{ color:red; margin:10px; }
 
 #message-list	{ overflow-y:scroll; padding:10px; }
 #message-item	{  }

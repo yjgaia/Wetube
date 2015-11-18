@@ -34,8 +34,6 @@
 	</head>
 	<body>
 		<template is="dom-bind" id="app">
-			<paper-toast id="add-user-toast" text="{{addUserName}}을(를) 추가하였습니다."></paper-toast>
-			
 			<!-- 로그인 화면 -->
 			<paper-dialog id="login" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
 				<h1>Wetube</h1>
@@ -78,7 +76,7 @@
 					
 					<div>
 						<template is="dom-repeat" items="{{videos}}">
-							<paper-card data-id="{{item.id}}" on-tap="view" heading="{{item.title}}" image="{{item.thumbnail}}">
+							<paper-card data-id="{{item.id}}" on-tap="goView" heading="{{item.title}}" image="{{item.thumbnail}}">
 								<div class="card-content">
 									{{item.description}}
 								</div>
@@ -117,7 +115,7 @@
 											{{addUser.name}}
 											<paper-icon-button data-id="{{addUser.id}}" icon="clear" on-tap="removeUser"></paper-icon-button>
 										</div>
-										<paper-fab mini id="invite-user-button" icon="done" on-tap="inviteUser"></paper-fab>
+										<paper-fab mini id="invite-user-button" data-id="{{addUser.id}}" data-name="{{addUser.name}}" icon="done" on-tap="inviteUser"></paper-fab>
 									</paper-icon-item>
 								</template>
 							</paper-dialog-scrollable>
@@ -144,7 +142,12 @@
 				</div>
 				
 			</iron-pages>
-
+			<paper-toast id="add-user-toast" text="{{addUserName}}님을 추가하였습니다."></paper-toast>
+			<paper-toast id="invited-toast" text="{{invitedTargetUserName}}님을 초대하였습니다."></paper-toast>
+			<paper-toast id="invite-user-toast" duration="10000" text="{{inviteUserName}}님이 영상을 함께 보기 원합니다.">
+				<span role="button" id="accept-invite-button" on-tap="acceptInvite">수락</span>
+				<span role="button" id="dismiss-invite-button" on-tap="removeInvite">거절</span>
+    		</paper-toast>
 		</template>
 		<script src="secure.js"></script>
 		<script src="user.js"></script>

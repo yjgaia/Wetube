@@ -42,7 +42,28 @@ function injectUserFuncs(app) {
 		});
 		
 		// 누군가 나를 초대할 때
-		
+		firebase.child('invite').child(userInfo.uid).on('child_added', function(snap) {
+			var inviteInfo = snap.val();
+			var inviteUserId = snap.key();
+			firebase.child('users').child(inviteUserId).once('value', function(snap) {
+				var inviteUserInfo = snap.val();
+				if (inviteUserInfo !== null
+					&& userInfo.uid === inviteUserInfo.wantUserId
+					&& inviteInfo.videoId === inviteUserInfo.nowVideoId) {
+					
+					app.inviteUserName = inviteUserInfo.name;
+					app.inviteUserId = inviteUserId;
+					app.inviteVideoData = {
+						id : inviteInfo.videoId,
+						title : inviteInfo.videoTitle,
+						description : inviteInfo.videoDescription
+					};
+					document.querySelector('#invite-user-toast').show();
+				} else {
+					firebase.child('invite').child(userInfo.uid).child(inviteUserId).remove();
+				}
+			});
+		});
 	};
 
 	if (userInfo === null) {
@@ -122,5 +143,62 @@ function injectUserFuncs(app) {
 	app.removeUser = function(e) {
 		firebase.child('add-users').child(userInfo.uid).child(e.currentTarget.dataId).remove();
 	};
-
+	
+	// 유저 초대하기
+	app.inviteUser = function(e) {
+		if (userInfo.nowVideoId !== undefined && app.currentData !== undefined) {
+			var wantUserId = e.currentTarget.dataId;
+			firebase.child('invite').child(wantUserId).child(userInfo.uid).set({
+				videoId : userInfo.nowVideoId,
+				videoTitle : app.currentData.title,
+				videoDescription : app.currentData.description,
+			});
+			firebase.child('users').child(userInfo.uid).update({
+				wantUserId : wantUserId
+			});
+			
+			// 유저 창 닫기
+			document.querySelector('#users-dialog').close();
+			
+			// 초대 완료 알림 출력
+			app.invitedTargetUserName = e.currentTarget.dataName;
+			document.querySelector('#invited-toast').show();
+		}
+	};
+	
+	// 초대 수락
+	app.acceptInvite = function() {
+		if (app.inviteVideoData !== undefined) {
+			app.view(app.inviteVideoData);
+			app.removeInvite();
+		}
+	};
+	
+	// 초대 삭제
+	app.removeInvite = function() {
+		firebase.child('invite').child(userInfo.uid).child(app.inviteUserId).remove();
+		
+		delete app.inviteUserName;
+		delete app.inviteUserId;
+		delete app.inviteVideoData;
+		document.querySelector('#invite-user-toast').hide();
+	};
+	
+	// 비디오 방 접속
+	app.enterRoom = function(videoId) {
+		firebase.child('users').child(userInfo.uid).update({
+			nowVideoId : videoId,
+			wantUserId : null
+		});
+		userInfo.nowVideoId = videoId;
+	};
+	
+	// 비디오 방 퇴장
+	app.exitRoom = function() {
+		firebase.child('users').child(userInfo.uid).update({
+			nowVideoId : null,
+			wantUserId : null
+		});
+		delete userInfo.nowVideoId;
+	};
 }

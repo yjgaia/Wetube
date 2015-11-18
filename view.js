@@ -5,24 +5,33 @@ function injectViewFuncs(app) {
 
 	var pages = document.querySelector('iron-pages');
 	var savedScrollY = 0;
-
-	app.view = function(e) {
-
-		app.videos.forEach(function(data) {
-			if (data.id === e.currentTarget.dataId) {
-				app.currentData = data;
-			}
-		});
+	
+	app.view = function(data) {
+		app.currentData = data;
 
 		savedScrollY = window.pageYOffset;
 		window.scrollTo(0, savedScrollY);
 
 		pages.selected = 1;
+		
+		app.enterRoom(data.id);
+	};
+
+	app.goView = function(e) {
+
+		app.videos.forEach(function(data) {
+			if (data.id === e.currentTarget.dataId) {
+				app.view(data);
+			}
+		});
 	};
 
 	app.back = function() {
 		pages.selected = 0;
 		window.scrollTo(0, savedScrollY);
+		app.currentData = undefined;
+		
+		app.exitRoom();
 	};
 
 	app.checkSearchKey = function(e) {
@@ -52,8 +61,6 @@ function injectViewFuncs(app) {
 								id : itemInfo.id,
 								title : itemInfo.snippet.title.length > 48 ? itemInfo.snippet.title.substring(0, 46) + '...' : itemInfo.snippet.title,
 								description : itemInfo.snippet.description,
-								channelTitle : itemInfo.snippet.channelTitle,
-								handle : itemInfo.id,
 								thumbnail : itemInfo.snippet.thumbnails.medium.url
 							});
 						}
@@ -78,8 +85,6 @@ function injectViewFuncs(app) {
 								id : itemInfo.id.videoId,
 								title : itemInfo.snippet.title.length > 48 ? itemInfo.snippet.title.substring(0, 46) + '...' : itemInfo.snippet.title,
 								description : itemInfo.snippet.description,
-								channelTitle : itemInfo.snippet.channelTitle,
-								handle : itemInfo.id.videoId,
 								thumbnail : itemInfo.snippet.thumbnails.medium.url
 							});
 						}

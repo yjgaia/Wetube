@@ -127,18 +127,26 @@
 						</paper-dialog>
 					</div>
 					
-					<!--
-					<div id="message-list">
-						<p class="message-item">영재: 안녕 다솜? 재밌는 영상이 있어서 초대했어.</p>
-						<p class="message-item">다솜: 안녕 영재? 어떤건데?</p>
-						<p class="message-item">영재: 이 부분이 특히 재밌어.</p>
+					<div id="chat-list" hidden="hidden">
+						<template is="dom-repeat" items="[[chatInfos]]" as="chatInfo">
+							<template is="dom-if" if="{{chatInfo.isChat}}">
+								<p class="chat-item"><span class$="{{chatInfo.nameSpanClass}}">{{chatInfo.userName}}:</span> {{chatInfo.message}}</p>
+							</template>
+							<template is="dom-if" if="{{!chatInfo.isChat}}">
+								<template is="dom-if" if="{{!chatInfo.isLeft}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 입장하셨습니다.</p>
+								</template>
+								<template is="dom-if" if="{{chatInfo.isLeft}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 퇴장하셨습니다.</p>
+								</template>
+							</template>
+						</template>
 					</div>
 					
-					<div id="message-form">
-						<paper-input id="message-input" label="메시지를 입력해주세요." value="{{message}}" on-keyup="{{checkMessageKey}}"></paper-input>
-						<paper-fab id="message-send" icon="send" on-tap="{{sendMessage}}"></paper-fab>
+					<div id="chat-form" hidden="hidden">
+						<paper-input id="chat-input" label="메시지" value="{{chatMessage}}" on-keyup="checkChatKey"></paper-input>
+						<paper-fab id="chat-send" icon="send" on-tap="chat"></paper-fab>
 					</div>
-					-->
 				</div>
 				
 			</iron-pages>
@@ -146,7 +154,7 @@
 			<paper-toast id="invited-toast" text="{{invitedTargetUserName}}님을 초대하였습니다."></paper-toast>
 			<paper-toast id="invite-user-toast" duration="10000" text="{{inviteUserName}}님이 영상을 함께 보기 원합니다.">
 				<span role="button" id="accept-invite-button" on-tap="acceptInvite">수락</span>
-				<span role="button" id="dismiss-invite-button" on-tap="removeInvite">거절</span>
+				<span role="button" id="dismiss-invite-button" on-tap="dismissInvite">거절</span>
     		</paper-toast>
 		</template>
 		<script src="secure.js"></script>

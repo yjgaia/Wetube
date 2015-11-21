@@ -5,6 +5,7 @@
 		<title>Wetube</title>
 		<script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
 		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+		<script src="https://www.youtube.com/iframe_api"></script>
 		<link rel="import" href="bower_components/polymer-firebase-login-buttons/polymer-firebase-login-buttons.html">
 		<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 		<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
@@ -96,7 +97,7 @@
 						</h1>
 					</paper-header-panel>
 					
-					<iframe fixed id="video" src="https://www.youtube.com/embed/{{currentData.id}}" frameborder="0" allowfullscreen></iframe>
+					<div fixed id="video"></div>
 					
 					<div id="invite-user-form">
 						<p>영상을 함께 시청할 유저를 선택하세요.</p>
@@ -133,11 +134,17 @@
 								<p class="chat-item"><span class$="{{chatInfo.nameSpanClass}}">{{chatInfo.userName}}:</span> {{chatInfo.message}}</p>
 							</template>
 							<template is="dom-if" if="{{!chatInfo.isChat}}">
-								<template is="dom-if" if="{{!chatInfo.isLeft}}">
+								<template is="dom-if" if="{{chatInfo.isEntered}}">
 									<p class="chat-item system">{{chatInfo.userName}}님이 입장하셨습니다.</p>
 								</template>
 								<template is="dom-if" if="{{chatInfo.isLeft}}">
 									<p class="chat-item system">{{chatInfo.userName}}님이 퇴장하셨습니다.</p>
+								</template>
+								<template is="dom-if" if="{{chatInfo.isStarted}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 재생을 시작하였습니다.
+								</template>
+								<template is="dom-if" if="{{chatInfo.isPaused}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 재생을 멈추었습니다.</p>
 								</template>
 							</template>
 						</template>

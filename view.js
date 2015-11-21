@@ -15,6 +15,52 @@ function injectViewFuncs(app) {
 		pages.selected = 1;
 		
 		app.enterRoom(data.id);
+		
+		if (app.youtubePlayer !== undefined) {
+			app.youtubePlayer.destroy();
+			app.youtubePlayer = undefined;
+		}
+		
+		// #video에 플레이어 삽입
+		app.youtubePlayer = new YT.Player('video', {
+			height : '390',
+			width : '640',
+			videoId : app.currentData.id,
+			events : {
+				'onStateChange' : function(e) {
+					
+					// 내가 조작한 경우에만 전송한다.
+					if (app.youtubePlayer.isNotMe !== true) {
+						
+						// 재생을 시작하면 현재 타임라인 정보와 함께 전송한다.
+						if (app.youtubePlayer.isPlaying !== true && e.data === YT.PlayerState.PLAYING) {
+							app.sendChat({
+								isStarted : true,
+								currentTime : app.youtubePlayer.getCurrentTime()
+							});
+						}
+						
+						// 재생을 멈추면 전송한다.
+						else if (app.youtubePlayer.isPlaying === true && e.data === YT.PlayerState.PAUSED) {
+							app.sendChat({
+								isPaused : true
+							});
+						}
+					}
+					
+					if (e.data === YT.PlayerState.PLAYING) {
+						app.youtubePlayer.isPlaying = true;
+						app.youtubePlayer.isNotMe = false;
+					} else if (e.data === YT.PlayerState.PAUSED) {
+						app.youtubePlayer.isPlaying = false;
+						app.youtubePlayer.isNotMe = false;
+					} else if (e.data === YT.PlayerState.ENDED) {
+						app.youtubePlayer.isPlaying = false;
+						app.youtubePlayer.isNotMe = false;
+					}
+				}
+			}
+		});
 	};
 
 	app.goView = function(e) {
@@ -32,6 +78,11 @@ function injectViewFuncs(app) {
 		app.currentData = undefined;
 		
 		app.exitRoom();
+		
+		if (app.youtubePlayer !== undefined) {
+			app.youtubePlayer.destroy();
+			app.youtubePlayer = undefined;
+		}
 	};
 
 	app.checkSearchKey = function(e) {
@@ -48,7 +99,7 @@ function injectViewFuncs(app) {
 
 			fetch('https://www.googleapis.com/youtube/v3/videos?chart=mostPopular&key=' + Secure.youtubeKey + '&part=snippet&maxResults=10', {
 				headers : {
-					"Content-type" : "application/json"
+					'Content-type' : 'application/json'
 				}
 			}).then(function(response) {
 				return response.json();
@@ -72,7 +123,7 @@ function injectViewFuncs(app) {
 		} else {
 			fetch('https://www.googleapis.com/youtube/v3/search?q=' + app.searchQuery + '&key=' + Secure.youtubeKey + '&part=snippet&maxResults=10', {
 				headers : {
-					"Content-type" : "application/json"
+					'Content-type' : 'application/json'
 				}
 			}).then(function(response) {
 				return response.json();
@@ -98,3 +149,4 @@ function injectViewFuncs(app) {
 
 	app.search();
 }
+

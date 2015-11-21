@@ -145,11 +145,12 @@ function injectUserFuncs(app) {
 	};
 	
 	var wantUserId;
-	var onInviteAccepted;
 	var inviteRoomRef;
 	var onRemoveInviteRoom;
 	var chatRef;
 	var onChat;
+	var sendLiveInterval;
+	var checkLiveInterval;
 	
 	clearRoom = function() {
 		
@@ -162,11 +163,17 @@ function injectUserFuncs(app) {
 			onChat = undefined;
 		}
 		
-		if (onInviteAccepted !== undefined) {
-			firebase.child('invite').child(wantUserId).child(userInfo.uid).off('child_added', onInviteAccepted);
-			onInviteAccepted = undefined;
-		}
 		wantUserId = undefined;
+		
+		if (sendLiveInterval !== undefined) {
+			clearInterval(sendLiveInterval);
+			sendLiveInterval = undefined;
+		}
+		
+		if (checkLiveInterval !== undefined) {
+			clearInterval(checkLiveInterval);
+			checkLiveInterval = undefined;
+		}
 	};
 	
 	startChat = function(inviteUserId, targetUserId, opponentUserName) {
@@ -185,7 +192,6 @@ function injectUserFuncs(app) {
 			if (snap.key() === inviteUserId) {
 				
 				app.push('chatInfos', {
-					isChat : false,
 					isLeft : true,
 					userName : opponentUserName
 				});
@@ -203,26 +209,103 @@ function injectUserFuncs(app) {
 		
 		chatRef = inviteRoomRef.child(inviteUserId).child('chats');
 		
+		var isConnected = false;
+		var isLive = false;
+		
 		// 메시지가 왔을 때
 		onChat = chatRef.on('child_added', function(snap) {
 			
 			var info = snap.val();
 			
-			app.push('chatInfos', {
-				isChat : info.isChat,
-				userId : info.userId,
-				userName : info.userId === userInfo.uid ? (info.isChat === true ? '나' : userInfo.google.displayName) : opponentUserName,
-				nameSpanClass : info.userId === userInfo.uid ? 'me' : 'other',
-				message : info.message
-			});
+			if (info.userId !== userInfo.uid) {
+				
+				if (app.youtubePlayer.pauseVideo !== undefined && isConnected !== true) {
+					app.youtubePlayer.pauseVideo();
+				}
+				
+				isConnected = true;
+				isLive = true;
+				
+				// 동영상을 재생했다고 전송받음
+				if (info.isStarted === true) {
+					app.youtubePlayer.isNotMe = true;
+					if (app.youtubePlayer.seekTo !== undefined) {
+						// 동영상 타임라인 이동
+						app.youtubePlayer.seekTo(info.currentTime);
+						app.youtubePlayer.playVideo();
+					}
+				}
+				
+				// 동영상을 멈추었다고 전송받음
+				else if (info.isPaused === true) {
+					app.youtubePlayer.isNotMe = true;
+					if (app.youtubePlayer.pauseVideo !== undefined) {
+						app.youtubePlayer.pauseVideo();
+					}
+				}
+			}
+			
+			if (info.isLive !== true) {
+				
+				app.push('chatInfos', {
+					isChat : info.isChat,
+					isEntered : info.isEntered,
+					isLeft : info.isLeft,
+					isStarted : info.isStarted,
+					isPaused : info.isPaused,
+					isMoved : app.youtubePlayer.isPlaying,
+					
+					userId : info.userId,
+					userName : info.userId === userInfo.uid ? (info.isChat === true ? '나' : userInfo.google.displayName) : opponentUserName,
+					nameSpanClass : info.userId === userInfo.uid ? 'me' : 'other',
+					message : info.message
+				});
+			}
 		});
+		
+		// 3초마다 접속되어있는지 보냄
+		sendLiveInterval = setInterval(function() {
+			app.sendChat({
+				isLive : true
+			});
+		}, 3000);
+		
+		// 5초마다 접속되어있는지 확인
+		checkLiveInterval = setInterval(function() {
+			if (isConnected === true && isLive !== true) {
+				
+				// 상대방이 나갔다고 판단
+				app.push('chatInfos', {
+					isLeft : true,
+					userName : opponentUserName
+				});
+				
+				clearRoom();
+				
+				document.querySelector('#chat-form').hidden = true;
+				
+				setTimeout(function() {
+					document.querySelector('#invite-user-form').hidden = false;
+					document.querySelector('#chat-list').hidden = true;
+				}, 3000);
+			}
+			isLive = false;
+		}, 5000);
+	};
+	
+	app.sendChat = function(data) {
+		
+		data.userId = userInfo.uid;
+		
+		if (chatRef !== undefined) {
+			chatRef.push(data);
+		}
 	};
 	
 	app.chat = function() {
 		if (app.chatMessage !== '') {
-			chatRef.push({
+			app.sendChat({
 				isChat : true,
-				userId : userInfo.uid,
 				message : app.chatMessage
 			});
 			app.chatMessage = '';
@@ -257,20 +340,6 @@ function injectUserFuncs(app) {
 			
 			// 채팅 시작
 			startChat(userInfo.uid, wantUserId, app.invitedTargetUserName);
-			
-			// 초대를 수락했을때
-			if (onInviteAccepted !== undefined) {
-				firebase.child('invite').child(wantUserId).child(userInfo.uid).off('child_added', onInviteAccepted);
-			}
-			onInviteAccepted = firebase.child('invite').child(wantUserId).child(userInfo.uid).on('child_added', function(snap) {
-				if (snap.key() === 'isAccepted' && snap.val() === true) {
-					chatRef.push({
-						isChat : false,
-						isLeft : false,
-						userId : wantUserId
-					});
-				}
-			});
 		}
 	};
 	
@@ -280,11 +349,11 @@ function injectUserFuncs(app) {
 			app.view(app.inviteVideoData);
 			document.querySelector('#invite-user-toast').hide();
 			
-			firebase.child('invite').child(userInfo.uid).child(app.inviteUserId).update({
-				isAccepted : true
-			});
-			
 			startChat(app.inviteUserId, userInfo.uid, app.inviteUserName);
+			
+			app.sendChat({
+				isEntered : true
+			});
 		}
 	};
 	

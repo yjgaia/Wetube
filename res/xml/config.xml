@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="io.cordova.helloCordova" version="2.0.0" xmlns="http://www.w3.org/ns/widgets">
+    <name>Wetube</name>
+    <description>
+        사랑하는 이, 혹은 친한 친구와 동시에 유튜브 영상을 시청하고 컨트롤 할 수 있는 앱입니다.
+    </description>
+    <author email="hanul@hanul.me" href="http://hanul.me">
+        Hanul
+    </author>
+    <access origin="*" />
+    <access launch-external="yes" origin="tel:*" />
+    <access launch-external="yes" origin="geo:*" />
+    <access launch-external="yes" origin="mailto:*" />
+    <access launch-external="yes" origin="sms:*" />
+    <access launch-external="yes" origin="market:*" />
+    <content src="index.html" />
+    <preference name="loglevel" value="DEBUG" />
+    <feature name="InAppBrowser">
+        <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    </feature>
+</widget>

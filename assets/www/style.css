@@ -1,0 +1,86 @@
+/*
+ * Nanum Gothic (Korean) http://www.google.com/fonts/earlyaccess
+ */
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/NanumGothic-Regular.eot);
+  src: url(fonts/NanumGothic-Regular.eot?#iefix) format('embedded-opentype'),
+       url(fonts/NanumGothic-Regular.woff2) format('woff2'),
+       url(fonts/NanumGothic-Regular.woff) format('woff'),
+       url(fonts/NanumGothic-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url(fonts/NanumGothic-Bold.eot);
+  src: url(fonts/NanumGothic-Bold.eot?#iefix) format('embedded-opentype'),
+       url(fonts/NanumGothic-Bold.woff2) format('woff2'),
+       url(fonts/NanumGothic-Bold.woff) format('woff'),
+       url(fonts/NanumGothic-Bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 800;
+  src: url(fonts/NanumGothic-ExtraBold.eot);
+  src: url(fonts/NanumGothic-ExtraBold.eot?#iefix) format('embedded-opentype'),
+       url(fonts/NanumGothic-ExtraBold.woff2) format('woff2'),
+       url(fonts/NanumGothic-ExtraBold.woff) format('woff'),
+       url(fonts/NanumGothic-ExtraBold.ttf) format('truetype');
+}
+
+body { font-family:'Nanum Gothic'; background-color:#FD9FB7; }
+
+paper-dialog	{ width:94%; text-align:center; }
+paper-dialog h1	{ color:#FD9FB7; font-size:20px; }
+paper-dialog p	{ margin-top:20px; padding:0 20px; text-align:left; }
+
+paper-scroll-header-panel .paper-header { background-color:#fff; font-size:20px; box-shadow:0 0 5px #000; }
+
+paper-card				{ margin-top:15px; margin-left:3%; width:94%; }
+paper-card:last-of-type	{ margin-bottom:15px; }
+
+paper-icon-button[icon=arrow-back]	{ margin: 8px; }
+
+#search-box		{ float:right; padding:8px; }
+#search-input	{ float:left; margin-right:10px; }
+#search-button	{ float:left; }
+
+#view	{ min-height:100vh; background-color:#fff; }
+
+#video	{ width:100%; height:56.25vw; background-color:#000; }
+
+#invite-user-form			{ padding:20px; text-align:center; }
+#invite-user-form p			{ font-size:15px; color:#666; }
+#invite-user-form h2 span	{ float:left; margin-left:20px; }
+#add-user-input				{ float:right; margin-right:10px; }
+#add-user-button			{ float:right; margin-bottom:10px; margin-right:20px; }
+#invite-user				{ margin:auto; margin-top:20px; }
+#accept-invite-button		{ color:#eeff41; margin:10px 10px 10px 20px; }
+#dismiss-invite-button		{ color:red; margin:10px; }
+
+.card-content		{ color:#666; line-height:1.4em; }
+.paper-header		{ color:#FF4081; height:57px; overflow-y:hidden; }
+
+#chat-list			{ overflow-y:scroll; }
+#chat-list .inner	{ padding:10px; padding-bottom:18px; }
+.chat-item			{  }
+.chat-item span		{ font-weight:bold; }
+.chat-item .me		{ color:#FD9FB7; }
+.chat-item.system	{ color:#CCCC00; }
+#chat-form			{ position:fixed; bottom:0; width:100%; background-color:#fff; }
+#chat-input			{ float:left; margin-left:10px; width:80% }
+#chat-send			{ float:right; margin-right:10px; }
+
+.avatar {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ccc;
+  background-size: 40px 40px;
+}

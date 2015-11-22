@@ -8,4 +8,5 @@
 - Material Design
 - Google Sign-In
 
-연재: http://series.hanul.so/series/view/563a2586e6ac12bd30fc0726
+- 안드로이드 앱 다운로드: https://play.google.com/store/apps/details?id=me.hanul.Wetube
+- 개발 내용 연재물: http://series.hanul.so/series/view/563a2586e6ac12bd30fc0726

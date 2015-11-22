@@ -1,0 +1,20 @@
+{
+    "cordova-plugin-inappbrowser": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apache/cordova-plugin-inappbrowser.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.apache.cordova.inappbrowser": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/SidneyS/cordova-plugin-inappbrowser-crosswalk.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}

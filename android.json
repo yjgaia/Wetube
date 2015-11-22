@@ -1,0 +1,36 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "res/xml/config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "org.apache.cordova.inappbrowser": {
+            "PACKAGE_NAME": "me.hanul.Wetube"
+        }
+    },
+    "dependent_plugins": {},
+    "modules": [
+        {
+            "file": "plugins/org.apache.cordova.inappbrowser/www/InAppBrowser.js",
+            "id": "org.apache.cordova.inappbrowser.InAppBrowser",
+            "pluginId": "org.apache.cordova.inappbrowser",
+            "clobbers": [
+                "window.open"
+            ]
+        }
+    ]
+}

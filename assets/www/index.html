@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<meta name="fragment" content="!">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
+		<title>Wetube</title>
+		<script src="js/firebase.js"></script>
+		<script src="js/youtube_iframe_api.js"></script>
+		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" href="bower_components/polymer-firebase-login-buttons/polymer-firebase-login-buttons.html">
+		<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+		<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+		<link rel="import" href="bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+		<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+		<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+		<link rel="import" href="bower_components/iron-icons/communication-icons.html">
+		<link rel="import" href="bower_components/iron-image/iron-image.html">
+		<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+		<link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+		<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+		<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+		<link rel="import" href="bower_components/paper-menu/paper-menu.html">
+		<link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+		<link rel="import" href="bower_components/paper-item/paper-item.html">
+		<link rel="import" href="bower_components/paper-item/paper-item-body.html">
+		<link rel="import" href="bower_components/paper-card/paper-card.html">
+		<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+		<link rel="import" href="bower_components/paper-button/paper-button.html">
+		<link rel="import" href="bower_components/paper-styles/color.html">
+		<link rel="import" href="bower_components/paper-input/paper-input.html">
+		<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+		<link rel="import" href="bower_components/neon-animation/animations/fade-in-animation.html">
+		<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+		<link rel="stylesheet" href="BASE_STYLE.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<template is="dom-bind" id="app">
+			<!-- 로그인 화면 -->
+			<paper-dialog id="login" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+				<h1><img src="logo.png"></h1>
+				<p>
+					Wetube를 이용해 사랑하는 이, 혹은 친한 친구와 동시에 유튜브 영상을 시청하고 컨트롤 할 수 있습니다.<br>
+					<br>
+					다른 공간에 있지만, 영상을 보는 체험은 동일한 것이죠.<br>
+					<br>
+					내가 영상을 재생/정지하거나 화면을 뒤로 돌리면 나와 연결된 이의 영상도 똑같이 반응합니다.<br>
+					<br>
+					영상을 함께 보자고 호출할 수도 있고, 채팅을 할 수도 있죠.<br>
+					<br>
+					이제 로그인하여, 함께하세요.
+				</p>
+				<firebase-google-login-button firebase-url="wetubeapp.firebaseio.com" user="{{userInfo}}" on-google-logged-in="googleLoggedIn"></firebase-google-login-button>
+			</paper-dialog>
+			
+			<iron-pages selected="0">
+			
+				<!-- 목록 화면 -->
+				<div id="list">
+					
+					<paper-scroll-header-panel fixed>
+						<h1 class="paper-header">
+							<paper-menu-button>
+								<paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+								<paper-menu class="dropdown-content">
+									<paper-item on-tap="logout">
+										Logout
+									</paper-item>
+								</paper-menu>
+							</paper-menu-button>
+							<img src="logo.png" height="20" style="margin-top:17px; margin-left:-10px; margin-bottom:-5px;">
+							<div id="search-box">
+								<paper-input no-label-float id="search-input" label="검색어 입력" value="{{searchQuery}}" on-keyup="checkSearchKey"></paper-input>
+								<paper-fab mini id="search-button" icon="search" on-tap="search"></paper-fab>
+							</div>
+						</h1>
+					</paper-header-panel>
+					
+					<div>
+						<template is="dom-repeat" items="{{videos}}">
+							<paper-card data-id="{{item.id}}" on-tap="goView" heading="{{item.title}}" image="{{item.thumbnail}}">
+								<div class="card-content">
+									{{item.description}}
+								</div>
+							</paper-card>
+						</template>
+					</div>
+					
+				</div>
+				
+				<!-- 뷰 화면 -->
+				<div id="view">
+					
+					<paper-scroll-header-panel fixed>
+						<h1 class="paper-header">
+							<paper-icon-button icon="arrow-back" on-tap="back"></paper-icon-button>
+							{{currentData.title}}
+						</h1>
+					</paper-header-panel>
+					
+					<div fixed id="video"></div>
+					
+					<div id="invite-user-form">
+						<p>영상을 함께 시청할 유저를 선택하세요.</p>
+						<paper-fab id="invite-user" icon="add" on-click="openInviteUser"></paper-fab>
+						<paper-dialog id="users-dialog">
+							<h2>
+								<span>유저 초대</span>
+								<paper-fab mini id="add-user-button" icon="add" on-tap="addUser"></paper-fab>
+								<paper-input no-label-float id="add-user-input" label="이메일 입력" value="{{addUserEmail}}" on-keyup="checkAddUserKey"></paper-input>
+							</h2>
+							<paper-dialog-scrollable>
+								<template is="dom-repeat" items="[[addUsers]]" as="addUser">
+									<paper-icon-item>
+		  								<div class="avatar" item-icon style$="background-image:url({{addUser.profileImageURL}})"></div>
+										<div class="flex">
+											{{addUser.name}}
+											<paper-icon-button data-id="{{addUser.id}}" icon="clear" on-tap="removeUser"></paper-icon-button>
+										</div>
+										<paper-fab mini id="invite-user-button" data-id="{{addUser.id}}" data-name="{{addUser.name}}" icon="done" on-tap="inviteUser"></paper-fab>
+									</paper-icon-item>
+								</template>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+								<paper-button dialog-dismiss>
+									취소
+								</paper-button>
+							</div>
+						</paper-dialog>
+					</div>
+					
+					<div id="chat-list" hidden="hidden">
+						<div class="inner">
+						<template is="dom-repeat" items="[[chatInfos]]" as="chatInfo">
+							<template is="dom-if" if="{{chatInfo.isChat}}">
+								<p class="chat-item"><span class$="{{chatInfo.nameSpanClass}}">{{chatInfo.userName}}:</span> {{chatInfo.message}}</p>
+							</template>
+							<template is="dom-if" if="{{!chatInfo.isChat}}">
+								<template is="dom-if" if="{{chatInfo.isEntered}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 입장하셨습니다.</p>
+								</template>
+								<template is="dom-if" if="{{chatInfo.isLeft}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 퇴장하셨습니다.</p>
+								</template>
+								<template is="dom-if" if="{{chatInfo.isStarted}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 재생을 시작하였습니다.
+								</template>
+								<template is="dom-if" if="{{chatInfo.isMoved}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 타임라인을 이동하였습니다.
+								</template>
+								<template is="dom-if" if="{{chatInfo.isPaused}}">
+									<p class="chat-item system">{{chatInfo.userName}}님이 재생을 멈추었습니다.</p>
+								</template>
+							</template>
+						</template>
+						</div>
+					</div>
+					
+					<div id="chat-form" hidden="hidden">
+						<paper-input id="chat-input" label="메시지" value="{{chatMessage}}" on-keyup="checkChatKey"></paper-input>
+						<paper-fab id="chat-send" icon="send" on-tap="chat"></paper-fab>
+					</div>
+				</div>
+				
+			</iron-pages>
+			<paper-toast id="add-user-toast" text="{{addUserName}}님을 추가하였습니다."></paper-toast>
+			<paper-toast id="invited-toast" text="{{invitedTargetUserName}}님을 초대하였습니다."></paper-toast>
+			<paper-toast id="invite-user-toast" duration="10000" text="{{inviteUserName}}님이 영상을 함께 보기 원합니다.">
+				<span role="button" id="accept-invite-button" on-tap="acceptInvite">수락</span>
+				<span role="button" id="dismiss-invite-button" on-tap="dismissInvite">거절</span>
+    		</paper-toast>
+		</template>
+		<script src="js/secure.js"></script>
+		<script src="js/user.js"></script>
+		<script src="js/view.js"></script>
+		<script src="js/app.js"></script>
+		<script src="cordova.js"></script>
+	</body>
+</html>

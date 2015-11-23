@@ -33,12 +33,13 @@ function injectViewFuncs(app) {
 					app.youtubePlayer.checkSeekInterval = setInterval(function() {
 						if (app.youtubePlayer.getCurrentTime !== undefined) {
 							var currentTime = app.youtubePlayer.getCurrentTime();
-							if (app.youtubePlayer.lastTime > 0 && Math.abs(currentTime - app.youtubePlayer.lastTime) > 1) {
+							if (app.youtubePlayer.isControlled !== true && app.youtubePlayer.lastTime > 0 && Math.abs(currentTime - app.youtubePlayer.lastTime) > 1) {
 								app.sendChat({
 									isMoved : true,
 									currentTime : currentTime
 								});
 							}
+							app.youtubePlayer.isControlled = false;
 							app.youtubePlayer.lastTime = currentTime;
 						}
 					}, 500);

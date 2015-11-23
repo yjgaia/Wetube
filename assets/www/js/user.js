@@ -126,7 +126,7 @@ function injectUserFuncs(app) {
 			.once('value', function(snap) {
 				var users = snap.val();
 				if (users === null) {
-					alert('해당 이메일에 해당하는 유저가 없습니다.');
+					alert('해당 이메일에 해당하는 Wetube 유저가 없습니다.');
 				} else {
 					for (var id in users) {
 						// 드디어 유저 정보를 찾았다.
@@ -247,6 +247,7 @@ function injectUserFuncs(app) {
 						// 동영상 타임라인 이동
 						app.youtubePlayer.seekTo(info.currentTime);
 						app.youtubePlayer.lastTime = info.currentTime;
+						app.youtubePlayer.isControlled = true;
 					}
 					if (app.youtubePlayer.playVideo !== undefined) {
 						app.youtubePlayer.playVideo();
@@ -259,6 +260,7 @@ function injectUserFuncs(app) {
 						// 동영상 타임라인 이동
 						app.youtubePlayer.seekTo(info.currentTime);
 						app.youtubePlayer.lastTime = info.currentTime;
+						app.youtubePlayer.isControlled = true;
 					}
 				}
 				

@@ -8,6 +8,8 @@
         Hanul
     </author>
     <access origin="*" />
+    <access launch-external="yes" origin="https://youtube.com/*" />
+    <access launch-external="yes" origin="https://m.youtube.com/*" />
     <access launch-external="yes" origin="tel:*" />
     <access launch-external="yes" origin="geo:*" />
     <access launch-external="yes" origin="mailto:*" />

@@ -72,7 +72,7 @@ paper-icon-button[icon=arrow-back]	{ margin: 8px; }
 .chat-item .me		{ color:#FD9FB7; }
 .chat-item.system	{ color:#CCCC00; }
 #chat-form			{ position:fixed; bottom:0; width:100%; background-color:#fff; }
-#chat-input			{ float:left; margin-left:10px; width:80% }
+#chat-input			{ float:left; margin-left:10px; width:75% }
 #chat-send			{ float:right; margin-right:10px; }
 
 .avatar {

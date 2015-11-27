@@ -3,7 +3,7 @@ Wetube.apk
 Wetube-release-unsigned.apk
 
 # Non-project-specific build files:
-build.xml
+# build.xml
 local.properties
 /gradlew
 /gradlew.bat

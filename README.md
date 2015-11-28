@@ -11,10 +11,17 @@
 - [Google Sign-In](https://developers.google.com/+/web/signin/)
 - [Android M](https://www.android.com/versions/marshmallow-6-0/)
 
+## 보안 이슈
+빌드하기 전에 `assets\www\js`에 아래와 같은 형식의 `secure.js` 파일을 생성하여야 제대로 작동합니다.
+```javascript
+Secure = {
+	youtubeKey : '<Youtube API 보안 키>'
+};
+```
+
 ## 링크
 - 안드로이드 앱 다운로드: https://play.google.com/store/apps/details?id=me.hanul.Wetube
 - 개발 내용 연재물: http://series.hanul.so/series/view/563a2586e6ac12bd30fc0726
-
 
 ## 라이센스
 [MIT](../../LICENSE)
